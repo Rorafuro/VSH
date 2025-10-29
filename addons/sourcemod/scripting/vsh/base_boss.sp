@@ -110,10 +110,6 @@ public void SaxtonHaleBoss_OnThink(SaxtonHaleBase boss)
 
 public void SaxtonHaleBoss_OnSpawn(SaxtonHaleBase boss)
 {
-  // Disable Health HUD
-  int iHideHUD = GetEntProp(boss.iClient, Prop_Send, "m_iHideHUD");
-  iHideHUD ^= HIDEHUD_HEALTH;
-  SetEntProp(boss.iClient, Prop_Send, "m_iHideHUD", iHideHUD);
 
   if (boss.bModel)
   {

@@ -55,29 +55,6 @@
 
 #define PARTICLE_GHOST    "ghost_appearation"
 
-// HIDEHUD_DEFINES
-#define NONE 
-#define	HIDEHUD_WEAPONSELECTION   (1<<0)  // Hide ammo count & weapon selection
-#define	HIDEHUD_FLASHLIGHT        (1<<1)
-#define	HIDEHUD_ALL               (1<<2)
-#define HIDEHUD_HEALTH            (1<<3)  // Hide health & armor / suit battery
-#define HIDEHUD_PLAYERDEAD        (1<<4)  // Hide when local player's dead
-#define HIDEHUD_NEEDSUIT          (1<<5)  // Hide when the local player doesn't have the HEV suit
-#define HIDEHUD_MISCSTATUS        (1<<6)  // Hide miscellaneous status elements (trains, pickup history, death notices, etc)
-#define HIDEHUD_CHAT              (1<<7)  // Hide all communication elements (saytext, voice icon, etc)
-#define	HIDEHUD_CROSSHAIR         (1<<8)  // Hide crosshairs
-#define	HIDEHUD_VEHICLE_CROSSHAIR	(1<<9)  // Hide vehicle crosshair
-#define HIDEHUD_INVEHICLE         (1<<10)
-#define HIDEHUD_BONUS_PROGRESS    (1<<11) // Hide bonus progress display (for bonus map challenges)
-// TF2 Specific
-#define HIDEHUD_BUILDING_STATUS   (1<<12) // Hide Engineer building status
-#define HIDEHUD_CLOAK_AND_FEIGN   (1<<13)	// Hide item effect meter (cloak, etc)
-#define HIDEHUD_PIPES_AND_CHARGE  (1<<14)	// Hide demo hud
-#define HIDEHUD_METAL             (1<<15) // Metal/account hud
-#define HIDEHUD_TARGET_ID         (1<<16) // Target ID
-#define HIDEHUD_MATCH_STATUS      (1<<17) // Hide match status
-#define HIDEHUD_BITCOUNT           18
-
 const TFTeam TFTeam_Boss = TFTeam_Blue;
 const TFTeam TFTeam_Attack = TFTeam_Red;
 
@@ -524,9 +501,8 @@ public void OnPluginStart()
   TagsDamage_Init();
   TagsName_Init();
 
-  // REWORK THIS LATERR
-  DonatorSound_OnPluginStart();
   
+
   SaxtonHaleFunction func;
   
   // Boss functions
@@ -854,17 +830,6 @@ public void OnPluginEnd()
 {
   for (int iClient = 1; iClient <= MaxClients; iClient++)
   {
-    // Show Health HUD
-    int iHideHUD = GetEntProp(iClient, Prop_Send, "m_iHideHUD");
-    if (!(iHideHUD & HIDEHUD_HEALTH)) // We turned off Health HUD for boss players.
-      iHideHUD ^= HIDEHUD_HEALTH;
-    SetEntProp(iClient, Prop_Send, "m_iHideHUD", iHideHUD);
-
-    // Hide Match Status
-    iHideHUD = GetEntProp(iClient, Prop_Send, "m_iHideHUD");
-    if (!(iHideHUD & HIDEHUD_MATCH_STATUS))
-      iHideHUD ^= HIDEHUD_MATCH_STATUS; 
-    SetEntProp(iClient, Prop_Send, "m_iHideHUD", iHideHUD);
 
     if (SaxtonHale_IsValidBoss(iClient))
     {
@@ -1102,9 +1067,6 @@ public void OnMapStart()
     g_bEnabled = false;
   }
 
-  // Handle Custom Donator stuff
-  if (g_bEnabled)
-    PrecacheDonatorAudio();
 }
 
 public Action Timer_Advertise(Handle timer) 
@@ -1425,9 +1387,6 @@ public Action Timer_RoundStartSound(Handle hTimer, int iClient)
   SaxtonHaleBase boss = SaxtonHaleBase(iClient);
   if (0 < iClient <= MaxClients && IsClientInGame(iClient) && boss.bValid)
   {
-    // Donator only
-    if (DonatorSound_Play(iClient))
-      return Plugin_Continue;
     
     char sSound[255];
     boss.CallFunction("GetSound", sSound, sizeof(sSound), VSHSound_RoundStart);
@@ -1531,10 +1490,6 @@ public void OnClientPutInServer(int iClient)
 
   Cookies_OnClientJoin(iClient);
   
-  // Disable Ugly HUD
-  //int iHideHUD = GetEntProp(iClient, Prop_Send, "m_iHideHUD");
-  //iHideHUD ^= HIDEHUD_MATCH_STATUS;
-  //SetEntProp(iClient, Prop_Send, "m_iHideHUD", iHideHUD);
 }
 
 public void OnClientPostAdminCheck(int iClient)

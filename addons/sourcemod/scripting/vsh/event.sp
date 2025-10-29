@@ -583,15 +583,6 @@ public void Event_RoundArenaStart(Event event, const char[] sName, bool bDontBro
 
        int iHideHUD = GetEntProp(iClient, Prop_Send, "m_iHideHUD");
 
-    // Ensure Health HUD is visible
-    //if (iHideHUD & HIDEHUD_HEALTH)
-    //    iHideHUD &= ~HIDEHUD_HEALTH;
-
-    // Ensure Match Status is hidden
-    //if (!(iHideHUD & HIDEHUD_MATCH_STATUS))
-    iHideHUD ^= HIDEHUD_MATCH_STATUS;
-    SetEntProp(iClient, Prop_Send, "m_iHideHUD", iHideHUD);
-
 
     g_iPlayerDamage[iClient] = 0;
     g_iPlayerAssistDamage[iClient] = 0;

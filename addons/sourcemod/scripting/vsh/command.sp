@@ -386,11 +386,6 @@ public Action Command_AdminMenu(int iClient, int iArgs)
 
 public Action Command_ConfigRefresh(int iClient, int iArgs)
 {
-  if (!g_bEnabled) return Plugin_Continue;
-
-  PrintToChatAll("%s%s %N You have to POLL you changes.", TEXT_TAG, TEXT_COLOR, iClient);
-  return Plugin_Handled;
-
   if (Client_HasFlag(iClient, ClientFlags_Admin))
   {
     Config_Refresh();
